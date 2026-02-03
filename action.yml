@@ -15,23 +15,43 @@ inputs:
     required: false
 
   values:
-    description: Array values (supports nested arrays)
+    description: Array values (JSON or JS literal depending on parse-mode)
     required: true
 
   value-type:
-    description: Value type (unstringify, number, boolean, string)
+    description: stringified | number | boolean | string
     required: false
-    default: unstringify
+    default: stringified
+
+  parse-mode:
+    description: json | js
+    required: false
+    default: json
 
   decl-kind:
     description: Variable declaration keyword (let, const, var)
     required: false
     default: let
 
+  export-style:
+    description: none | named | default | commonjs
+    required: false
+    default: none
+
+  pretty:
+    description: Pretty-print output
+    required: false
+    default: "false"
+
   overwrite:
     description: Overwrite file if it already exists
     required: false
     default: "true"
+
+  dry-run:
+    description: Print output but do not write file
+    required: false
+    default: "false"
 
 outputs:
   file:

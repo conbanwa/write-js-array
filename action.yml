@@ -1,0 +1,42 @@
+name: Generate JS Array File
+description: Generate a JavaScript file declaring an array (supports multidimensional arrays)
+author: your-github-username
+branding:
+  icon: file-plus
+  color: blue
+
+inputs:
+  js-name:
+    description: JavaScript file name (e.g. data.js)
+    required: true
+
+  array-name:
+    description: Array variable name (defaults to js-name without extension)
+    required: false
+
+  values:
+    description: Array values (supports nested arrays)
+    required: true
+
+  value-type:
+    description: Value type (unstringify, number, boolean, string)
+    required: false
+    default: unstringify
+
+  decl-kind:
+    description: Variable declaration keyword (let, const, var)
+    required: false
+    default: let
+
+  overwrite:
+    description: Overwrite file if it already exists
+    required: false
+    default: "true"
+
+outputs:
+  file:
+    description: Generated JavaScript file name
+
+runs:
+  using: node20
+  main: index.js

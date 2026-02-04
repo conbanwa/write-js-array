@@ -38,7 +38,7 @@ jobs:
           # Case 4: Overwrite Protected (File exists, overwrite is false)
           - test-name: "Overwrite Denied"
             js-name: "protected.js"
-            values: "['new data']"
+            values: '[1,2,3]'
             overwrite: false
             setup-file: true # Custom flag to trigger file creation
             expected-error: true
@@ -46,7 +46,7 @@ jobs:
           # Case 5: Root Permission Denied
           - test-name: "Root Permission Error"
             js-name: "/root_test.js"
-            values: "['data']"
+            values: "[1, 2, 3]"
             expected-error: true
 
     steps:

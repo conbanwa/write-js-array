@@ -1,0 +1,78 @@
+name: Test Failing Cases
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  test-failures:
+    runs-on: ubuntu-latest
+    # This allows the job to be marked "Success" (Green) even if the steps fail
+    # If you want it to be Red but run all steps, remove this line.
+    continue-on-error: true 
+
+    strategy:
+      fail-fast: false # 1. IMPORTANT: Keeps running other matrix jobs if one fails
+      matrix:
+        include:
+          # Case 1: Invalid JSON (Single quotes are not valid JSON)
+          - test-name: "Invalid JSON Syntax"
+            js-name: "bad-json.js"
+            values: "{'key': 'value'}" 
+            parse-mode: "json"
+            expected-error: true
+
+          # Case 2: Writing to a non-existent directory (Action should likely fail if it doesn't mkdir -p)
+          - test-name: "Missing Directory"
+            js-name: "folder/does/not/exist/data.js"
+            values: "[1, 2, 3]"
+            expected-error: true
+
+          # Case 3: Invalid JS Literal Syntax (Unclosed bracket)
+          - test-name: "Invalid JS Syntax"
+            js-name: "broken.js"
+            values: "['unclosed string"
+            parse-mode: "js"
+            expected-error: true
+
+          # Case 4: Overwrite Protected (File exists, overwrite is false)
+          - test-name: "Overwrite Denied"
+            js-name: "protected.js"
+            values: "['new data']"
+            overwrite: false
+            setup-file: true # Custom flag to trigger file creation
+            expected-error: true
+
+          # Case 5: Root Permission Denied
+          - test-name: "Root Permission Error"
+            js-name: "/root_test.js"
+            values: "['data']"
+            expected-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Helper step for Case 4
+      - name: Setup Dummy File
+        if: ${{ matrix.setup-file }}
+        run: touch ${{ matrix.js-name }}
+
+      - name: Run Action (Expect Fail)
+        id: test_action
+        uses: ./ # or conbanwa/write-js-array@v1
+        continue-on-error: true # 2. IMPORTANT: Allows this specific step to fail
+        with:
+          js-name: ${{ matrix.js-name }}
+          values: ${{ matrix.values }}
+          parse-mode: ${{ matrix.parse-mode || 'json' }}
+          overwrite: ${{ matrix.overwrite || true }}
+
+      - name: Verify Failure
+        if: always()
+        run: |
+          if [ "${{ steps.test_action.outcome }}" == "success" ]; then
+            echo "::error::Test '${{ matrix.test-name }}' PASSED but should have FAILED."
+            exit 1
+          else
+            echo "Test '${{ matrix.test-name }}' failed as expected."
+          fi

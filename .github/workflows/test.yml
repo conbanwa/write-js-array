@@ -51,7 +51,34 @@ jobs:
       - name: Verify matrix_pretty.js
         if: always()
         run: |
-          EXPECT="let matrix_pretty = [[[30, 30, 30, 30, 1], 740, 96, 25, 116], [[30, 30, 30, 30, 1], 921, 23, 2, 107]];"
+          EXPECT="let matrix_pretty = [
+          [
+          [
+          30,
+          30,
+          30,
+          30,
+          1
+              ],
+          740,
+          96,
+          25,
+          116
+          ],
+          [
+          [
+          30,
+          30,
+          30,
+          30,
+          1
+              ],
+          921,
+          23,
+          2,
+          107
+          ]
+          ];"
           ACTUAL=$(cat matrix_pretty.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -309,9 +336,11 @@ jobs:
       # Test 10: overwrite false
       ###########################
       - name: Prepare overwrite file
+        if: always()
         run: echo "original content" > overwrite_test.js
 
       - name: Test overwrite false
+        if: always()
         id: overwrite_false
         continue-on-error: true
         uses: ./ 

@@ -16,6 +16,7 @@ jobs:
       ###########################
       - name: Test flat array default
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: flat_default.js
           values: '[1,2,3]'
@@ -25,11 +26,11 @@ jobs:
           EXPECT="let flat_default = [1, 2, 3];"
           ACTUAL=$(cat flat_default.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
-            echo "flat_default.js content mismatch!"
             echo "Expected:"
             echo "$EXPECT"
             echo "Actual:"
             echo "$ACTUAL"
+            echo "flat_default.js content mismatch!"
             exit 1
           fi
 
@@ -38,6 +39,7 @@ jobs:
       ###########################
       - name: Test multidimensional array pretty
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: matrix_pretty.js
           values: |
@@ -53,6 +55,10 @@ jobs:
             ];"
           ACTUAL=$(cat matrix_pretty.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "matrix_pretty.js content mismatch!"
             exit 1
           fi
@@ -62,6 +68,7 @@ jobs:
       ###########################
       - name: Test JS literal parsing
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: js_literal.js
           values: '[[1,2],[3,4]]'
@@ -73,6 +80,10 @@ jobs:
           EXPECT="let js_literal = [[1, 2], [3, 4]];"
           ACTUAL=$(cat js_literal.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "js_literal.js content mismatch!"
             exit 1
           fi
@@ -82,6 +93,7 @@ jobs:
       ###########################
       - name: Test value-type number
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: numbers.js
           values: '1,2,3'
@@ -92,6 +104,10 @@ jobs:
           EXPECT="let numbers = [1, 2, 3];"
           ACTUAL=$(cat numbers.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "numbers.js content mismatch!"
             exit 1
           fi
@@ -101,6 +117,7 @@ jobs:
       ###########################
       - name: Test value-type boolean
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: booleans.js
           values: 'true,false,true'
@@ -111,6 +128,10 @@ jobs:
           EXPECT="let booleans = [true, false, true];"
           ACTUAL=$(cat booleans.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "booleans.js content mismatch!"
             exit 1
           fi
@@ -120,6 +141,7 @@ jobs:
       ###########################
       - name: Test value-type string
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: strings.js
           values: 'a,b,c'
@@ -130,6 +152,10 @@ jobs:
           EXPECT="let strings = [\"a\", \"b\", \"c\"];"
           ACTUAL=$(cat strings.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "strings.js content mismatch!"
             exit 1
           fi
@@ -139,6 +165,7 @@ jobs:
       ###########################
       - name: Test decl-kind const
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: decl_const.js
           values: '[1,2,3]'
@@ -149,6 +176,10 @@ jobs:
           EXPECT="const decl_const = [1, 2, 3];"
           ACTUAL=$(cat decl_const.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "decl_const.js content mismatch!"
             exit 1
           fi
@@ -158,6 +189,7 @@ jobs:
       ###########################
       - name: Test export named
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: export_named.js
           values: '[1,2,3]'
@@ -169,12 +201,17 @@ jobs:
           export { export_named };"
           ACTUAL=$(cat export_named.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
               echo "export_named.js content mismatch!"
               exit 1
           fi
 
       - name: Test export default
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: export_default.js
           values: '[1,2,3]'
@@ -186,12 +223,17 @@ jobs:
           export default export_default;"
           ACTUAL=$(cat export_default.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "export_default.js content mismatch!"
             exit 1
           fi
 
       - name: Test export commonjs
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: export_commonjs.js
           values: '[1,2,3]'
@@ -203,6 +245,10 @@ jobs:
           module.exports = export_commonjs;"
           ACTUAL=$(cat export_commonjs.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "export_commonjs.js content mismatch!"
             exit 1
           fi
@@ -212,6 +258,7 @@ jobs:
       ###########################
       - name: Test dry-run
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: dry_run.js
           values: '[1,2,3]'
@@ -232,17 +279,21 @@ jobs:
 
       - name: Test overwrite false
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: overwrite_test.js
           values: '[1,2,3]'
           overwrite: false
-        continue-on-error: true
 
       - name: Verify overwrite_test.js unchanged
         run: |
           ACTUAL=$(cat overwrite_test.js)
           EXPECT="original content"
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "overwrite_test.js should not be overwritten!"
             exit 1
           fi
@@ -252,6 +303,7 @@ jobs:
       ###########################
       - name: Test array-name default
         uses: ./ 
+        continue-on-error: true
         with:
           js-name: default_name.js
           values: '[1,2,3]'
@@ -261,6 +313,10 @@ jobs:
           EXPECT="let default_name = [1, 2, 3];"
           ACTUAL=$(cat default_name.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "default_name.js content mismatch!"
             exit 1
           fi

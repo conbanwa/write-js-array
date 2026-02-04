@@ -19,7 +19,55 @@ from GitHub Actions inputs.
 ## Basic Usage
 
 ```yaml
-- uses: your-username/generate-js-array@v1
+- uses: conbanwa/write-js-array@v1
   with:
     js-name: data.js
     values: '[1,2,3]'
+```
+## Parsing Modes
+JSON (default, safest)
+
+```yaml
+parse-mode: json
+values: '[1, [2, 3]]'
+```
+
+JS literals (explicit opt-in)
+
+```yaml
+parse-mode: js
+values: '[[1,2], [3,4]]'
+```
+
+## Export Styles
+
+```yaml
+export-style: named # export { data }
+export-style: default # export default data
+export-style: commonjs
+```
+
+## Pretty Formatting
+
+```yaml
+pretty: true
+```
+
+## Safety Options
+
+```yaml
+overwrite: false
+dry-run: true
+```
+
+## Compatibility
+
+v1.x: no breaking changes
+
+Node.js 20
+
+No dependencies
+
+## License
+
+MIT

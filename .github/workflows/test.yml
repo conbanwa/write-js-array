@@ -2,6 +2,7 @@ name: Full Test Generate JS Array Action
 
 on:
   workflow_dispatch:
+  push:
 
 jobs:
   test-all-options:
@@ -21,7 +22,7 @@ jobs:
 
       - name: Verify flat_default.js
         run: |
-          EXPECT="let flat_default = [1, 2, 3];\n"
+          EXPECT="let flat_default = [1, 2, 3];"
           ACTUAL=$(cat flat_default.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "flat_default.js content mismatch!"
@@ -49,7 +50,7 @@ jobs:
           EXPECT="let matrix_pretty = [
             [[30, 30, 30, 30, 1], 740, 96, 25, 116],
             [[30, 30, 30, 30, 1], 921, 23, 2, 107]
-            ];\n"
+            ];"
           ACTUAL=$(cat matrix_pretty.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "matrix_pretty.js content mismatch!"
@@ -69,7 +70,7 @@ jobs:
 
       - name: Verify js_literal.js
         run: |
-          EXPECT="let js_literal = [[1, 2], [3, 4]];\n"
+          EXPECT="let js_literal = [[1, 2], [3, 4]];"
           ACTUAL=$(cat js_literal.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "js_literal.js content mismatch!"
@@ -88,7 +89,7 @@ jobs:
 
       - name: Verify numbers.js
         run: |
-          EXPECT="let numbers = [1, 2, 3];\n"
+          EXPECT="let numbers = [1, 2, 3];"
           ACTUAL=$(cat numbers.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "numbers.js content mismatch!"
@@ -107,7 +108,7 @@ jobs:
 
       - name: Verify booleans.js
         run: |
-          EXPECT="let booleans = [true, false, true];\n"
+          EXPECT="let booleans = [true, false, true];"
           ACTUAL=$(cat booleans.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "booleans.js content mismatch!"
@@ -126,7 +127,7 @@ jobs:
 
       - name: Verify strings.js
         run: |
-          EXPECT="let strings = [\"a\", \"b\", \"c\"];\n"
+          EXPECT="let strings = [\"a\", \"b\", \"c\"];"
           ACTUAL=$(cat strings.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "strings.js content mismatch!"
@@ -145,7 +146,7 @@ jobs:
 
       - name: Verify decl_const.js
         run: |
-          EXPECT="const decl_const = [1, 2, 3];\n"
+          EXPECT="const decl_const = [1, 2, 3];"
           ACTUAL=$(cat decl_const.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "decl_const.js content mismatch!"
@@ -165,7 +166,7 @@ jobs:
       - name: Verify export_named.js
         run: |
           EXPECT="let export_named = [1, 2, 3];
-          export { export_named };\n"
+          export { export_named };"
           ACTUAL=$(cat export_named.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
               echo "export_named.js content mismatch!"
@@ -182,7 +183,7 @@ jobs:
       - name: Verify export_default.js
         run: |
           EXPECT="let export_default = [1, 2, 3];
-          export default export_default;\n"
+          export default export_default;"
           ACTUAL=$(cat export_default.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "export_default.js content mismatch!"
@@ -199,7 +200,7 @@ jobs:
       - name: Verify export_commonjs.js
         run: |
           EXPECT="let export_commonjs = [1, 2, 3];
-          module.exports = export_commonjs;\n"
+          module.exports = export_commonjs;"
           ACTUAL=$(cat export_commonjs.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "export_commonjs.js content mismatch!"
@@ -257,7 +258,7 @@ jobs:
 
       - name: Verify default_name.js
         run: |
-          EXPECT="let default_name = [1, 2, 3];\n"
+          EXPECT="let default_name = [1, 2, 3];"
           ACTUAL=$(cat default_name.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "default_name.js content mismatch!"

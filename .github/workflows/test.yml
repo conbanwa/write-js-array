@@ -15,6 +15,7 @@ jobs:
       # Test 1: Flat JSON array default
       ###########################
       - name: Test flat array default
+        if: always()
         uses: ./ 
         with:
           js-name: flat_default.js
@@ -38,6 +39,7 @@ jobs:
       # Test 2: Multidimensional JSON array, pretty
       ###########################
       - name: Test multidimensional array pretty
+        if: always()
         uses: ./ 
         with:
           js-name: matrix_pretty.js
@@ -64,6 +66,7 @@ jobs:
       # Test 3: JS literal parsing
       ###########################
       - name: Test JS literal parsing
+        if: always()
         uses: ./ 
         with:
           js-name: js_literal.js
@@ -89,6 +92,7 @@ jobs:
       # Test 4: value-type number
       ###########################
       - name: Test value-type number
+        if: always()
         uses: ./ 
         with:
           js-name: numbers.js
@@ -113,6 +117,7 @@ jobs:
       # Test 5: value-type boolean
       ###########################
       - name: Test value-type boolean
+        if: always()
         uses: ./ 
         with:
           js-name: booleans.js
@@ -137,6 +142,7 @@ jobs:
       # Test 6: value-type string
       ###########################
       - name: Test value-type string
+        if: always()
         uses: ./ 
         with:
           js-name: strings.js
@@ -161,6 +167,7 @@ jobs:
       # Test 7: decl-kind const
       ###########################
       - name: Test decl-kind const
+        if: always()
         uses: ./ 
         with:
           js-name: decl_const.js
@@ -185,6 +192,7 @@ jobs:
       # Test 8: export styles
       ###########################
       - name: Test export named
+        if: always()
         uses: ./ 
         with:
           js-name: export_named.js
@@ -207,6 +215,7 @@ jobs:
           fi
 
       - name: Test export default
+        if: always()
         uses: ./ 
         with:
           js-name: export_default.js
@@ -229,6 +238,7 @@ jobs:
           fi
 
       - name: Test export commonjs
+        if: always()
         uses: ./ 
         with:
           js-name: export_commonjs.js
@@ -254,6 +264,7 @@ jobs:
       # Test 9: dry-run
       ###########################
       - name: Test dry-run
+        if: always()
         uses: ./ 
         with:
           js-name: dry_run.js
@@ -275,6 +286,7 @@ jobs:
         run: echo "original content" > overwrite_test.js
 
       - name: Test overwrite false
+        if: always()
         uses: ./ 
         with:
           js-name: overwrite_test.js
@@ -299,6 +311,7 @@ jobs:
       # Test 11: array-name default
       ###########################
       - name: Test array-name default
+        if: always()
         uses: ./ 
         with:
           js-name: default_name.js

@@ -12,6 +12,9 @@ const pretty = process.env["INPUT_PRETTY"] === "true";
 const overwrite = process.env["INPUT_OVERWRITE"] !== "false";
 const dryRun = process.env["INPUT_DRY-RUN"] === "true";
 
+// NEW: field input
+const field = (process.env["INPUT_FIELD"] || "").trim();
+
 if (rawValues.length > 100_000) {
   throw new Error("values input too large");
 }
@@ -37,8 +40,12 @@ if (!["let", "const", "var"].includes(declKind)) {
   throw new Error(`Invalid decl-kind: ${declKind}`);
 }
 
-if (fs.existsSync(jsName) && !overwrite) {
-  throw new Error(`File "${jsName}" already exists and overwrite=false`);
+let existingContent = "";
+if (fs.existsSync(jsName)) {
+  existingContent = fs.readFileSync(jsName, "utf8");
+  if (!overwrite && !dryRun) {
+    throw new Error(`File "${jsName}" already exists and overwrite=false`);
+  }
 }
 
 function parseInput(raw) {
@@ -80,8 +87,33 @@ if (valueType === "stringified") {
   arrayLiteral = `[${processedItems.join(", ")}]`;
 }
 
-let content = `${declKind} ${arrayName} = ${arrayLiteral};\n`;
+// NEW: field handling
+let content = existingContent;
+if (field) {
+  // Check if arrayName exists in existingContent
+  // Minimal change: add/update only the field
+  const regex = new RegExp(`(${arrayName}\\s*=\\s*\\{[\\s\\S]*?\\})`, "m");
+  if (regex.test(existingContent)) {
+    // insert or replace field in existing object literal
+    content = existingContent.replace(regex, match => {
+      // minimal parsing: add or replace field
+      const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]+)`);
+      if (fieldRegex.test(match)) {
+        return match.replace(fieldRegex, `${field}: ${arrayLiteral}`);
+      } else {
+        // add field before last }
+        return match.replace(/}$/, `, ${field}: ${arrayLiteral}}`);
+      }
+    });
+  } else {
+    // create object with the field
+    content = `${declKind} ${arrayName} = { ${field}: ${arrayLiteral} };\n`;
+  }
+} else {
+  content = `${declKind} ${arrayName} = ${arrayLiteral};\n`;
+}
 
+// append export if needed
 switch (exportStyle) {
   case "named":
     content += `export { ${arrayName} };\n`;

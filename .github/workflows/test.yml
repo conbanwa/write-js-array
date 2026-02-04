@@ -286,7 +286,8 @@ jobs:
         run: echo "original content" > overwrite_test.js
 
       - name: Test overwrite false
-        if: always()
+        id: overwrite_false
+        continue-on-error: true
         uses: ./ 
         with:
           js-name: overwrite_test.js
@@ -296,6 +297,12 @@ jobs:
       - name: Verify overwrite_test.js unchanged
         if: always()
         run: |
+          if [ "${{ steps.overwrite_false.outcome }}" != "failure" ]; then
+            echo "❌ Expected action to fail, but it succeeded"
+            exit 1
+          fi
+          echo "✅ Correctly failed with 'File already exists' error as expected"
+          
           ACTUAL=$(cat overwrite_test.js)
           EXPECT="original content"
           if [ "$ACTUAL" != "$EXPECT" ]; then

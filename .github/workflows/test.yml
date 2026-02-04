@@ -1,0 +1,265 @@
+name: Full Test Generate JS Array Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-all-options:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      ###########################
+      # Test 1: Flat JSON array default
+      ###########################
+      - name: Test flat array default
+        uses: ./ 
+        with:
+          js-name: flat_default.js
+          values: '[1,2,3]'
+
+      - name: Verify flat_default.js
+        run: |
+          EXPECT="let flat_default = [1, 2, 3];\n"
+          ACTUAL=$(cat flat_default.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "flat_default.js content mismatch!"
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
+            exit 1
+          fi
+
+      ###########################
+      # Test 2: Multidimensional JSON array, pretty
+      ###########################
+      - name: Test multidimensional array pretty
+        uses: ./ 
+        with:
+          js-name: matrix_pretty.js
+          values: |
+            [[[30,30,30,30,1],740,96,25,116],
+             [[30,30,30,30,1],921,23,2,107]]
+          pretty: true
+
+      - name: Verify matrix_pretty.js
+        run: |
+          EXPECT="let matrix_pretty = [
+            [[30, 30, 30, 30, 1], 740, 96, 25, 116],
+            [[30, 30, 30, 30, 1], 921, 23, 2, 107]
+            ];\n"
+          ACTUAL=$(cat matrix_pretty.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "matrix_pretty.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 3: JS literal parsing
+      ###########################
+      - name: Test JS literal parsing
+        uses: ./ 
+        with:
+          js-name: js_literal.js
+          values: '[[1,2],[3,4]]'
+          parse-mode: js
+          value-type: stringified
+
+      - name: Verify js_literal.js
+        run: |
+          EXPECT="let js_literal = [[1, 2], [3, 4]];\n"
+          ACTUAL=$(cat js_literal.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "js_literal.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 4: value-type number
+      ###########################
+      - name: Test value-type number
+        uses: ./ 
+        with:
+          js-name: numbers.js
+          values: '1,2,3'
+          value-type: number
+
+      - name: Verify numbers.js
+        run: |
+          EXPECT="let numbers = [1, 2, 3];\n"
+          ACTUAL=$(cat numbers.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "numbers.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 5: value-type boolean
+      ###########################
+      - name: Test value-type boolean
+        uses: ./ 
+        with:
+          js-name: booleans.js
+          values: 'true,false,true'
+          value-type: boolean
+
+      - name: Verify booleans.js
+        run: |
+          EXPECT="let booleans = [true, false, true];\n"
+          ACTUAL=$(cat booleans.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "booleans.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 6: value-type string
+      ###########################
+      - name: Test value-type string
+        uses: ./ 
+        with:
+          js-name: strings.js
+          values: 'a,b,c'
+          value-type: string
+
+      - name: Verify strings.js
+        run: |
+          EXPECT="let strings = [\"a\", \"b\", \"c\"];\n"
+          ACTUAL=$(cat strings.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "strings.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 7: decl-kind const
+      ###########################
+      - name: Test decl-kind const
+        uses: ./ 
+        with:
+          js-name: decl_const.js
+          values: '[1,2,3]'
+          decl-kind: const
+
+      - name: Verify decl_const.js
+        run: |
+          EXPECT="const decl_const = [1, 2, 3];\n"
+          ACTUAL=$(cat decl_const.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "decl_const.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 8: export styles
+      ###########################
+      - name: Test export named
+        uses: ./ 
+        with:
+          js-name: export_named.js
+          values: '[1,2,3]'
+          export-style: named
+
+      - name: Verify export_named.js
+        run: |
+          EXPECT="let export_named = [1, 2, 3];
+          export { export_named };\n"
+          ACTUAL=$(cat export_named.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+              echo "export_named.js content mismatch!"
+              exit 1
+          fi
+
+      - name: Test export default
+        uses: ./ 
+        with:
+          js-name: export_default.js
+          values: '[1,2,3]'
+          export-style: default
+
+      - name: Verify export_default.js
+        run: |
+          EXPECT="let export_default = [1, 2, 3];
+          export default export_default;\n"
+          ACTUAL=$(cat export_default.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "export_default.js content mismatch!"
+            exit 1
+          fi
+
+      - name: Test export commonjs
+        uses: ./ 
+        with:
+          js-name: export_commonjs.js
+          values: '[1,2,3]'
+          export-style: commonjs
+
+      - name: Verify export_commonjs.js
+        run: |
+          EXPECT="let export_commonjs = [1, 2, 3];
+          module.exports = export_commonjs;\n"
+          ACTUAL=$(cat export_commonjs.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "export_commonjs.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 9: dry-run
+      ###########################
+      - name: Test dry-run
+        uses: ./ 
+        with:
+          js-name: dry_run.js
+          values: '[1,2,3]'
+          dry-run: true
+
+      - name: Verify dry_run.js does not exist
+        run: |
+          if [ -f dry_run.js ]; then
+            echo "dry_run.js should not exist in dry-run mode!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 10: overwrite false
+      ###########################
+      - name: Prepare overwrite file
+        run: echo "original content" > overwrite_test.js
+
+      - name: Test overwrite false
+        uses: ./ 
+        with:
+          js-name: overwrite_test.js
+          values: '[1,2,3]'
+          overwrite: false
+        continue-on-error: true
+
+      - name: Verify overwrite_test.js unchanged
+        run: |
+          ACTUAL=$(cat overwrite_test.js)
+          EXPECT="original content"
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "overwrite_test.js should not be overwritten!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 11: array-name default
+      ###########################
+      - name: Test array-name default
+        uses: ./ 
+        with:
+          js-name: default_name.js
+          values: '[1,2,3]'
+
+      - name: Verify default_name.js
+        run: |
+          EXPECT="let default_name = [1, 2, 3];\n"
+          ACTUAL=$(cat default_name.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "default_name.js content mismatch!"
+            exit 1
+          fi

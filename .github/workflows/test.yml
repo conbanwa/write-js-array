@@ -7,7 +7,6 @@ on:
 jobs:
   test-all-options:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -22,6 +21,7 @@ jobs:
           values: '[1,2,3]'
 
       - name: Verify flat_default.js
+        if: always()
         run: |
           EXPECT="let flat_default = [1, 2, 3];"
           ACTUAL=$(cat flat_default.js)
@@ -47,11 +47,9 @@ jobs:
           pretty: false
 
       - name: Verify matrix_pretty.js
+        if: always()
         run: |
-          EXPECT="let matrix_pretty = [
-            [[30, 30, 30, 30, 1], 740, 96, 25, 116],
-            [[30, 30, 30, 30, 1], 921, 23, 2, 107]
-            ];"
+          EXPECT="let matrix_pretty = [[[30, 30, 30, 30, 1], 740, 96, 25, 116], [[30, 30, 30, 30, 1], 921, 23, 2, 107]];"
           ACTUAL=$(cat matrix_pretty.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -74,6 +72,7 @@ jobs:
           value-type: stringified
 
       - name: Verify js_literal.js
+        if: always()
         run: |
           EXPECT="let js_literal = [[1, 2], [3, 4]];"
           ACTUAL=$(cat js_literal.js)
@@ -97,6 +96,7 @@ jobs:
           value-type: number
 
       - name: Verify numbers.js
+        if: always()
         run: |
           EXPECT="let numbers = [1, 2, 3];"
           ACTUAL=$(cat numbers.js)
@@ -120,6 +120,7 @@ jobs:
           value-type: boolean
 
       - name: Verify booleans.js
+        if: always()
         run: |
           EXPECT="let booleans = [true, false, true];"
           ACTUAL=$(cat booleans.js)
@@ -143,6 +144,7 @@ jobs:
           value-type: string
 
       - name: Verify strings.js
+        if: always()
         run: |
           EXPECT="let strings = [\"a\", \"b\", \"c\"];"
           ACTUAL=$(cat strings.js)
@@ -166,6 +168,7 @@ jobs:
           decl-kind: const
 
       - name: Verify decl_const.js
+        if: always()
         run: |
           EXPECT="const decl_const = [1, 2, 3];"
           ACTUAL=$(cat decl_const.js)
@@ -189,6 +192,7 @@ jobs:
           export-style: named
 
       - name: Verify export_named.js
+        if: always()
         run: |
           EXPECT="let export_named = [1, 2, 3];
           export { export_named };"
@@ -210,6 +214,7 @@ jobs:
           export-style: default
 
       - name: Verify export_default.js
+        if: always()
         run: |
           EXPECT="let export_default = [1, 2, 3];
           export default export_default;"
@@ -231,6 +236,7 @@ jobs:
           export-style: commonjs
 
       - name: Verify export_commonjs.js
+        if: always()
         run: |
           EXPECT="let export_commonjs = [1, 2, 3];
           module.exports = export_commonjs;"
@@ -255,6 +261,7 @@ jobs:
           dry-run: true
 
       - name: Verify dry_run.js does not exist
+        if: always()
         run: |
           if [ -f dry_run.js ]; then
             echo "dry_run.js should not exist in dry-run mode!"
@@ -275,6 +282,7 @@ jobs:
           overwrite: false
 
       - name: Verify overwrite_test.js unchanged
+        if: always()
         run: |
           ACTUAL=$(cat overwrite_test.js)
           EXPECT="original content"
@@ -297,6 +305,7 @@ jobs:
           values: '[1,2,3]'
 
       - name: Verify default_name.js
+        if: always()
         run: |
           EXPECT="let default_name = [1, 2, 3];"
           ACTUAL=$(cat default_name.js)

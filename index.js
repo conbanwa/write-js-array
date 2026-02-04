@@ -73,7 +73,11 @@ if (valueType === "stringified") {
   arrayLiteral = toJs(parsed);
 } else {
   const items = rawValues.split(",").map(v => v.trim());
-  arrayLiteral = `[${items.join(", ")}]`;
+  let processedItems = items;
+  if (valueType === "string") {
+    processedItems = items.map(v => JSON.stringify(v));
+  }
+  arrayLiteral = `[${processedItems.join(", ")}]`;
 }
 
 let content = `${declKind} ${arrayName} = ${arrayLiteral};\n`;
@@ -98,3 +102,4 @@ if (!dryRun) {
 }
 
 fs.appendFileSync(process.env.GITHUB_OUTPUT, `file=${jsName}\n`);
+

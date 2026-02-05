@@ -55,7 +55,7 @@ jobs:
           EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: ${{ matrix.values }} };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
-          export{ ${{ matrix.array-name }} };"
+          export { ${{ matrix.array-name }} };"
           elif [ "${{ matrix.export-style }}" = "default" ]; then
             EXPECT="${EXPECT}
           exportdefault ${{ matrix.array-name }};"
@@ -99,7 +99,7 @@ jobs:
           EXPECT="${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: ${{ matrix.values }}, letters: ['a'] };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
-          export{ obj };"
+          export { obj };"
           elif [ "${{ matrix.export-style }}" = "default" ]; then
             EXPECT="${EXPECT}
           exportdefault obj;"
@@ -143,7 +143,7 @@ jobs:
           EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: ${{ matrix.values }}, letters: ['a'] };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
-          export{ ${{ matrix.array-name }} };"
+          export { ${{ matrix.array-name }} };"
           elif [ "${{ matrix.export-style }}" = "default" ]; then
             EXPECT="${EXPECT}
           exportdefault ${{ matrix.array-name }};"
@@ -183,7 +183,7 @@ jobs:
           EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: ${{ matrix.values }} };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
-          export{ ${{ matrix.array-name }} };"
+          export { ${{ matrix.array-name }} };"
           elif [ "${{ matrix.export-style }}" = "default" ]; then
             EXPECT="${EXPECT}
           exportdefault ${{ matrix.array-name }};"

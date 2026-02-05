@@ -7,9 +7,6 @@ on:
 jobs:
   test-failures:
     runs-on: ubuntu-latest
-    # This allows the job to be marked "Success" (Green) even if the steps fail
-    # If you want it to be Red but run all steps, remove this line.
-    continue-on-error: true 
 
     strategy:
       fail-fast: false # 1. IMPORTANT: Keeps running other matrix jobs if one fails
@@ -41,7 +38,7 @@ jobs:
             values: '["1",2,3]'
             overwrite: false
             setup-file: true # Custom flag to trigger file creation
-            expected-error: false
+            expected-fail: false
 
           # Case 5: Root Permission Denied
           - test-name: "Root Permission Error"
@@ -49,13 +46,14 @@ jobs:
             values: '[true,2,3]'
             expected-error: true
 
-          # Case 4: Read-Only Directory
+          # Case 6: Read-Only Directory
           # The runner cannot create files inside a root-owned directory.
           - test-name: "Root Owned Directory (EACCES)"
             js-name: "locked_dir/data.js"
             values: '[1,2,3]'
+            setup-file: true # Custom flag to trigger file creation
             setup-cmd: "sudo mkdir locked_dir && sudo chown root:root locked_dir && sudo chmod 755 locked_dir"
-            expected-fail: true
+            expected-error: true
 
 
     steps:
@@ -67,6 +65,7 @@ jobs:
         run: touch ${{ matrix.js-name }}
 
       - name: Run Action (Expect Fail)
+        if: always()
         id: test_action
         uses: ./ # or conbanwa/write-js-array@v1
         continue-on-error: true # 2. IMPORTANT: Allows this specific step to fail

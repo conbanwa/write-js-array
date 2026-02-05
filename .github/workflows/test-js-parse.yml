@@ -60,7 +60,7 @@ jobs:
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6, ${{ matrix.i }}, ${{ matrix.a }}], letters: ['a'] };"
+          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6, ${{ matrix.i }}, "${{ matrix.a }}"], letters: ['a'] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -91,7 +91,7 @@ jobs:
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { numbers: [4, 5, 6, ${{ matrix.i }}, ${{ matrix.a }}], letters: ['a'] };"
+          EXPECT="let obj = { numbers: [4, 5, 6, ${{ matrix.i }}, "${{ matrix.a }}"], letters: ['a'] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -117,7 +117,7 @@ jobs:
       - name: Verify new_object_field.js
         if: always()
         run: |
-          EXPECT="let new_object_field = { nums: [7, 8, 9, ${{ matrix.i }}, ${{ matrix.a }}] };"
+          EXPECT="let new_object_field = { nums: [7, 8, 9, ${{ matrix.i }}, "${{ matrix.a }}"] };"
           ACTUAL=$(cat new_object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"

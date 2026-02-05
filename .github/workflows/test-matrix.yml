@@ -21,13 +21,10 @@ jobs:
           - n1
         parse-mode:
           - js
-          - json
           - ''
         decl-kind:
           - const
           - var
-          - let
-          - ''
         export-style:
           - named
           - ''

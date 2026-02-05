@@ -1,4 +1,4 @@
-name: JS Array Field
+name: JS Parse
 
 on:
   workflow_dispatch:

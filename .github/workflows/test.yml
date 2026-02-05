@@ -254,7 +254,7 @@ jobs:
       - name: Verify export_named.js
         if: always()
         run: |
-          EXPECT="let export_named = ["1", 2, 3];
+          EXPECT="let export_named = [\"1\", 2, 3];
           export { export_named };"
           ACTUAL=$(cat export_named.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
@@ -277,8 +277,8 @@ jobs:
       - name: Verify export_default.js
         if: always()
         run: |
-          EXPECT="let export_default = ["1", "2", "3"];
-          export default export_default;"
+          EXPECT='let export_default = ["1", "2", "3"];
+          export default export_default;'
           ACTUAL=$(cat export_default.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"

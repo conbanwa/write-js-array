@@ -1,4 +1,4 @@
-name: JS Array Field
+name: JSON Field Matrix
 
 on:
   workflow_dispatch:

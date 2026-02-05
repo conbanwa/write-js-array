@@ -10,8 +10,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        i: [0, 1, 2, 3, 9.99, -1.0, true, "[[[-1, 0, 1]], []]", "[-1, 0, 1]", null, -9999999999999.0, 8888888888.8]
-        a: ['"a"', '"null"', '"[\"-1\", 0, 1]"', '"Infinity"', "'Infinity'", undefined, "undefined"]
+        i: [0, 1, 2, 3, 9.99, -1.0, true, "[[[-1, 0, 1]], []]", "[-1, 0, 1]", null, "'Infinity'", undefined, NaN, -9999999999999.0, 8888888888.8]
+        a: ['"a"', '"null"', '"[\"-1\", 0, 1]"', '"Infinity"', "'Infinity'", 'undefined', "undefined"]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -29,7 +29,7 @@ jobs:
 
       - name: Verify object_field.js
         run: |
-          EXPECT="let object_field = { numbers: [1, 2, 3, ${{ matrix.i }}, ${{ matrix.a }}] };"
+          EXPECT="let object_field = { numbers: [1, 2, 3, ${{ matrix.i }}, "${{ matrix.a }}"] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -55,6 +55,7 @@ jobs:
           values: '[4,5,6,${{ matrix.i }}, ${{ matrix.a }}]'
           field: numbers
           overwrite: true
+          parse-mode: js
 
       - name: Verify object_field.js preserves letters
         if: always()
@@ -85,6 +86,7 @@ jobs:
           values: '[4,5,6,${{ matrix.i }}, ${{ matrix.a }}]'
           field: numbers
           overwrite: true
+          parse-mode: js
 
       - name: Verify object_field.js preserves letters
         if: always()
@@ -110,6 +112,7 @@ jobs:
           js-name: new_object_field.js
           values: '[7,8,9,${{ matrix.i }}, ${{ matrix.a }}]'
           field: nums
+          parse-mode: js
 
       - name: Verify new_object_field.js
         if: always()

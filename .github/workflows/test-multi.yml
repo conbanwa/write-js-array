@@ -1,0 +1,124 @@
+name: JS Array Field
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test-field:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        i: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9.99, -1.0, true, "[[[-1, 0, 1]], [], false]", "[-1, 0, 1]", -9999999999999.0, 8888888888.8]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      ###########################
+      # Test 0: Create object with field
+      ###########################
+      - name: Create object with field
+        uses: ./ 
+        with:
+          js-name: object_field.js
+          values: '[1,2,3,${{ matrix.i }}]'
+          field: numbers
+
+      - name: Verify object_field.js
+        run: |
+          EXPECT="let object_field = { numbers: [1, 2, 3, ${{ matrix.i }}] };"
+          ACTUAL=$(cat object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
+            echo "object_field.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 1: Overwrite only field and preserve previous fields
+      ###########################
+      - name: Prepare existing object
+        if: always()
+        run: "echo \"let obj = { n: [4, 5, 6], numbers: [0], letters: ['a'] };\" > object_field.js"
+
+      - name: Overwrite only field
+        if: always()
+        uses: ./ 
+        with:
+          js-name: object_field.js
+          values: '[4,5,6,${{ matrix.i }}]'
+          field: numbers
+          overwrite: true
+
+      - name: Verify object_field.js preserves letters
+        if: always()
+        run: |
+          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6, ${{ matrix.i }}], letters: ['a'] };"
+          ACTUAL=$(cat object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
+            echo "object_field.js field overwrite failed!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 2: Overwrite only field and preserve other fields
+      ###########################
+      - name: Prepare existing object
+        if: always()
+        run: "echo \"let obj = { numbers: [0], letters: ['a'] };\" > object_field.js"
+
+      - name: Overwrite only field
+        if: always()
+        uses: ./ 
+        with:
+          js-name: object_field.js
+          values: '[4,5,6,${{ matrix.i }}]'
+          field: numbers
+          overwrite: true
+
+      - name: Verify object_field.js preserves letters
+        if: always()
+        run: |
+          EXPECT="let obj = { numbers: [4, 5, 6, ${{ matrix.i }}], letters: ['a'] };"
+          ACTUAL=$(cat object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
+            echo "object_field.js field overwrite failed!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 3: Create new object with field
+      ###########################
+      - name: Create new object with field
+        if: always()
+        uses: ./ 
+        with:
+          js-name: new_object_field.js
+          values: '[7,8,9,${{ matrix.i }}]'
+          field: nums
+
+      - name: Verify new_object_field.js
+        if: always()
+        run: |
+          EXPECT="let new_object_field = { nums: [7, 8, 9, ${{ matrix.i }}] };"
+          ACTUAL=$(cat new_object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
+            echo "new_object_field.js content mismatch!"
+            exit 1
+          fi

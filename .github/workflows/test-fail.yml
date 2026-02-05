@@ -60,6 +60,10 @@ jobs:
       - uses: actions/checkout@v4
 
       # Helper step for Case 4
+      - name: Setup Dummy Dir
+        if: ${{ matrix.setup-cmd }}
+        run: ${{ matrix.setup-cmd }}
+
       - name: Setup Dummy File
         if: ${{ matrix.setup-file }}
         run: touch ${{ matrix.js-name }}

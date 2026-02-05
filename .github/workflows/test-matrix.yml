@@ -54,26 +54,25 @@ jobs:
 
       - name: Verify object_field.js
         run: |
-          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: [1, 2, 3, ${{ matrix.values }}] };"
+          BASE="${{ matrix.array-name }} = { ${{ matrix.field }}: ${{ matrix.values }} };"
+          EXPECT="${{ matrix.decl-kind }} ${BASE}"
           if [ "${{ matrix.export-style }}" = "named" ]; then
-            EXPECT="$EXPECT
+            EXPECT="${EXPECT}
           export { ${{ matrix.array-name }} };"
           elif [ "${{ matrix.export-style }}" = "default" ]; then
-            EXPECT="$EXPECT
+            EXPECT="${EXPECT}
           export default ${{ matrix.array-name }};"
           elif [ "${{ matrix.export-style }}" = "commonjs" ]; then
-            EXPECT="$EXPECT
+            EXPECT="${EXPECT}
           module.exports = ${{ matrix.array-name }};"
           fi
-
           ACTUAL=$(cat object_field.js)
-
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
-            printf "%s\n" "$EXPECT"
+            echo "$EXPECT"
             echo "Actual:"
-            printf "%s\n" "$ACTUAL"
-            echo "object_field.js content mismatch!"
+            echo "$ACTUAL"
+            echo "object_field.js mismatch!"
             exit 1
           fi
 
@@ -101,17 +100,26 @@ jobs:
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { n: [4, 5, 6], numbers: [${{ matrix.values }}], letters: ['a'] };"
+          EXPECT="${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: ${{ matrix.values }}, letters: ['a'] };"
+          if [ "${{ matrix.export-style }}" = "named" ]; then
+            EXPECT="${EXPECT}
+          export { obj };"
+          elif [ "${{ matrix.export-style }}" = "default" ]; then
+            EXPECT="${EXPECT}
+          export default obj;"
+          elif [ "${{ matrix.export-style }}" = "commonjs" ]; then
+            EXPECT="${EXPECT}
+          module.exports = obj;"
+          fi
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
             echo "$EXPECT"
             echo "Actual:"
             echo "$ACTUAL"
-            echo "object_field.js field overwrite failed!"
+            echo "field overwrite failed!"
             exit 1
           fi
-
       ###########################
       # Test 2: Overwrite only field and preserve other fields
       ###########################

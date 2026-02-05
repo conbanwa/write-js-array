@@ -396,6 +396,7 @@ jobs:
       # Test 12: field with NaN and Infinity
       ###########################
       - name: Create object with NaN and Infinity
+        if: always()
         uses: ./
         with:
           js-name: nan_inf_field.js
@@ -405,6 +406,7 @@ jobs:
           parse-mode: js
 
       - name: Verify nan_inf_field.js exact content
+        if: always()
         run: |
           EXPECT="let nan_inf_field = { nums: [NaN, Infinity, -Infinity, null, undefined, 1e+200, -1e-200] };"
           ACTUAL=$(cat nan_inf_field.js)
@@ -423,6 +425,7 @@ jobs:
       # Test: all options except dry-run and value-type
       ###########################
       - name: Generate with all options
+        if: always()
         uses: ./
         with:
           js-name: all_options.js
@@ -436,10 +439,11 @@ jobs:
           field: data
 
       - name: Verify all_options.js exact content
+        if: always()
         run: |
-          EXPECT="const customArray = { data: [1, \"a\", true, null, undefined, NaN, Infinity, -Infinity, 1e+200] };
+          EXPECT='const customArray = { data: [1, "a", true, null, undefined, NaN, Infinity, -Infinity, 1e+200] };
           export { customArray };
-          "
+          '
           ACTUAL=$(cat all_options.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "all_options.js content mismatch!"

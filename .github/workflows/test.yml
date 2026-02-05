@@ -391,3 +391,30 @@ jobs:
             echo "default_name.js content mismatch!"
             exit 1
           fi
+
+      ###########################
+      # Test 12: field with NaN and Infinity
+      ###########################
+      - name: Create object with NaN and Infinity
+        uses: ./
+        with:
+          js-name: nan_inf_field.js
+          values: '[NaN, Infinity, -Infinity]'
+          field: nums
+          value-type: stringified
+          parse-mode: js
+
+      - name: Verify nan_inf_field.js exact content
+        run: |
+          EXPECT="let nan_inf_field = { nums: [NaN, Infinity, -Infinity] };\n"
+          ACTUAL=$(cat nan_inf_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "nan_inf_field.js content mismatch!"
+            echo "Expected:"
+            printf "%s" "$EXPECT"
+            echo
+            echo "Actual:"
+            printf "%s" "$ACTUAL"
+            echo
+            exit 1
+          fi

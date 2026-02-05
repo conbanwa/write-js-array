@@ -137,10 +137,10 @@ jobs:
           export-style: ${{ matrix.export-style }}
           overwrite: ${{ matrix.overwrite }}
 
-      - name: Verify object_field.js preserves letters
+      - name: Verify object_field.js preserves letters with numbers 0
         if: always()
         run: |
-          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { numbers: [0], ${{ matrix.field }}: ${{ matrix.values }}, letters: ['a'] };"
+          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { numbers: [0], letters: ['a'], ${{ matrix.field }}: ${{ matrix.values }} };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
           export { ${{ matrix.array-name }} };"

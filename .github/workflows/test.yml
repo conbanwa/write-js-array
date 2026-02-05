@@ -77,7 +77,7 @@ jobs:
           23,
           2,
           107
-          ]
+            ]
           ];"
           ACTUAL=$(cat matrix_pretty.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then

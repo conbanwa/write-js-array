@@ -248,7 +248,7 @@ jobs:
         uses: ./ 
         with:
           js-name: export_named.js
-          values: '[1,2,3]'
+          values: '["1",2,3]'
           export-style: named
 
       - name: Verify export_named.js
@@ -271,7 +271,7 @@ jobs:
         uses: ./ 
         with:
           js-name: export_default.js
-          values: '[1,2,3]'
+          values: '["1","2","3"]'
           export-style: default
 
       - name: Verify export_default.js

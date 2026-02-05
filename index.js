@@ -68,9 +68,10 @@ function toJs(value, indent = 0) {
   }
   if (typeof value === "string") return JSON.stringify(value);
   if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (value === undefined) return "undefined";
   if (value === null) return "null";
 
-  throw new Error(`Unsupported value type: ${typeof value}`);
+  throw new Error(`Unsupported value type: ${typeof value}, value: ${value}`);
 }
 
 let arrayLiteral;

@@ -96,7 +96,7 @@ jobs:
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: ${{ matrix.values }}, letters: ["a"] };"
+          EXPECT='${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: ${{ matrix.values }}, letters: ["a"] };'
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
           export { ${{ matrix.array-name }} };"

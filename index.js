@@ -110,7 +110,7 @@ if (field) {
         return match.replace(fieldRegex, `${field}: ${arrayLiteral}`);
       } else {
         // add field before last }
-        return match.replace(/}$/, `, ${field}: ${arrayLiteral}}`);
+        return match.replace(/}\s*$/, `, ${field}: ${arrayLiteral}}`);
       }
     });
   } else if (anyObjDeclRegex.test(existingContent)) {

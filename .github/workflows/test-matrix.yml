@@ -78,7 +78,7 @@ jobs:
       ###########################
       - name: Prepare existing object
         if: always()
-        run: 'echo "${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: [0], letters: ["a"] };" > object_field.js'
+        run: 'echo "${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: [0], letters: [\"a\"] };" > object_field.js'
 
       - name: Overwrite only field
         if: always()
@@ -96,7 +96,7 @@ jobs:
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: ${{ matrix.values }}, letters: [a] };"
+          EXPECT="${{ matrix.decl-kind }} obj = { n: [4, 5, 6], ${{ matrix.field }}: ${{ matrix.values }}, letters: ["a"] };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
           export { ${{ matrix.array-name }} };"
@@ -122,7 +122,7 @@ jobs:
       ###########################
       - name: Prepare existing object
         if: always()
-        run: 'echo "${{ matrix.decl-kind }} ${{ matrix.array-name }} = { numbers: [0], letters: ["a"] };" > object_field.js'
+        run: 'echo "${{ matrix.decl-kind }} ${{ matrix.array-name }} = { numbers: [0], letters: [a] };" > object_field.js'
 
       - name: Overwrite only field
         if: always()
@@ -137,10 +137,10 @@ jobs:
           export-style: ${{ matrix.export-style }}
           overwrite: ${{ matrix.overwrite }}
 
-      - name: Verify object_field.js preserves letters with numbers 0
+      - name: Verify object_field.js preserves letters no quote
         if: always()
         run: |
-          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { numbers: [0], letters: ['a'], ${{ matrix.field }}: ${{ matrix.values }} };"
+          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { numbers: [0], letters: [a], ${{ matrix.field }}: ${{ matrix.values }} };"
           if [ "${{ matrix.export-style }}" = "named" ]; then
             EXPECT="${EXPECT}
           export { ${{ matrix.array-name }} };"

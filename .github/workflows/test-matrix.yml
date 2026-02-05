@@ -15,11 +15,10 @@ jobs:
           - "[-1, 0, 1]"
         field:
           - data
-          - number
-          - ''
+          - n8
         array-name:
-          - customArray
-          - ''
+          - 'customArray'
+          - n1
         parse-mode:
           - js
           - json
@@ -32,8 +31,6 @@ jobs:
         export-style:
           - named
           - ''
-        pretty:
-          - false
         overwrite:
           - true
           - false
@@ -54,7 +51,6 @@ jobs:
           parse-mode: ${{ matrix.parse-mode }}
           decl-kind: ${{ matrix.decl-kind }}
           export-style: ${{ matrix.export-style }}
-          pretty: ${{ matrix.pretty }}
           overwrite: ${{ matrix.overwrite }}
 
       - name: Verify object_field.js
@@ -98,7 +94,6 @@ jobs:
           parse-mode: ${{ matrix.parse-mode }}
           decl-kind: ${{ matrix.decl-kind }}
           export-style: ${{ matrix.export-style }}
-          pretty: ${{ matrix.pretty }}
           overwrite: ${{ matrix.overwrite }}
 
       - name: Verify object_field.js preserves letters
@@ -143,7 +138,6 @@ jobs:
           parse-mode: ${{ matrix.parse-mode }}
           decl-kind: ${{ matrix.decl-kind }}
           export-style: ${{ matrix.export-style }}
-          pretty: ${{ matrix.pretty }}
           overwrite: ${{ matrix.overwrite }}
 
       - name: Verify object_field.js preserves letters
@@ -184,7 +178,6 @@ jobs:
           parse-mode: ${{ matrix.parse-mode }}
           decl-kind: ${{ matrix.decl-kind }}
           export-style: ${{ matrix.export-style }}
-          pretty: ${{ matrix.pretty }}
           overwrite: ${{ matrix.overwrite }}
 
       - name: Verify new_object_field.js

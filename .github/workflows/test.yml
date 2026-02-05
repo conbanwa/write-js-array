@@ -440,8 +440,7 @@ jobs:
         if: always()
         run: |
           EXPECT='const customArray = { data: [1, "a", true, null, undefined, NaN, Infinity, -Infinity, 1e+200] };
-          export { customArray };
-          '
+          export { customArray };'
           ACTUAL=$(cat all_options.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "all_options.js content mismatch!"

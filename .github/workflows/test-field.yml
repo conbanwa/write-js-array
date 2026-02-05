@@ -1,0 +1,73 @@
+name: Full Test Generate JS Array Action - Field
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test-field:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      ###########################
+      # Test 1: Create object with field
+      ###########################
+      - name: Create object with field
+        uses: ./ 
+        with:
+          js-name: object_field.js
+          values: '[1,2,3]'
+          field: numbers
+
+      - name: Verify object_field.js
+        run: |
+          EXPECT="let object_field = { numbers: [1, 2, 3] };\n"
+          ACTUAL=$(cat object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "object_field.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 2: Overwrite only field and preserve other fields
+      ###########################
+      - name: Prepare existing object
+        run: "echo \"let obj = { numbers: [0], letters: ['a'] };\" > object_field.js"
+
+      - name: Overwrite only field
+        uses: ./ 
+        with:
+          js-name: object_field.js
+          values: '[4,5,6]'
+          field: numbers
+          overwrite: true
+
+      - name: Verify object_field.js preserves letters
+        run: |
+          EXPECT="let obj = { numbers: [4, 5, 6], letters: ['a'] };\n"
+          ACTUAL=$(cat object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "object_field.js field overwrite failed!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 3: Create new object with field
+      ###########################
+      - name: Create new object with field
+        uses: ./ 
+        with:
+          js-name: new_object_field.js
+          values: '[7,8,9]'
+          field: nums
+
+      - name: Verify new_object_field.js
+        run: |
+          EXPECT="let new_object_field = { nums: [7, 8, 9] };\n"
+          ACTUAL=$(cat new_object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "new_object_field.js content mismatch!"
+            exit 1
+          fi

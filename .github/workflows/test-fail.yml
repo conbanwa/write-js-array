@@ -25,7 +25,7 @@ jobs:
           # Case 2: Writing to a non-existent directory (Action should likely fail if it doesn't mkdir -p)
           - test-name: "Missing Directory"
             js-name: "folder/does/not/exist/data.js"
-            values: '[1,2,3]'
+            values: '[-1,2,3]'
             expected-error: true
 
           # Case 3: Invalid JS Literal Syntax (Unclosed bracket)
@@ -46,7 +46,7 @@ jobs:
           # Case 5: Root Permission Denied
           - test-name: "Root Permission Error"
             js-name: "/root_test.js"
-            values: '[1,2,3]'
+            values: '[true,2,3]'
             expected-error: true
 
           # Case 4: Read-Only Directory

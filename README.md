@@ -1,6 +1,6 @@
-# Generate JS Array Action
+# Write JS Array Action
 
-Generate a JavaScript file that declares an array — including **Multidimensional Array** —
+Write a JavaScript file that declares an array — including **Multidimensional Array** —
 from GitHub Actions inputs.
 
 ## Features
@@ -59,9 +59,15 @@ pretty: true
 overwrite: false
 dry-run: true
 ```
+## Field Options
+
+```yaml
+field: field-name # if field is provided , treat array-name as a object, change array-name.field.
+```
 
 ## Compatibility
 
+v1.1: support field
 v1.x: no breaking changes
 
 Node.js 20

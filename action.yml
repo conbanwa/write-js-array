@@ -1,6 +1,6 @@
-name: Generate JS Array File
-description: Generate a JavaScript file declaring an array (supports multidimensional arrays)
-author: your-github-username
+name: Write JS Array File
+description: Write a JavaScript file declaring an array (supports multidimensional arrays)
+author: conbanwa
 branding:
   icon: file-plus
   color: blue
@@ -22,6 +22,10 @@ inputs:
     description: stringified | number | boolean | string
     required: false
     default: stringified
+
+  field:
+    description: If field is provided, array-name is treated as an object.
+    required: false
 
   parse-mode:
     description: json | js
@@ -55,7 +59,7 @@ inputs:
 
 outputs:
   file:
-    description: Generated JavaScript file name
+    description: Wrote JavaScript file name
 
 runs:
   using: node20

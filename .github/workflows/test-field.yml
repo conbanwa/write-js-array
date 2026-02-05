@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v3
 
       ###########################
-      # Test 1: Create object with field
+      # Test 0: Create object with field
       ###########################
       - name: Create object with field
         uses: ./ 
@@ -31,6 +31,36 @@ jobs:
             echo "Actual:"
             echo "$ACTUAL"
             echo "object_field.js content mismatch!"
+            exit 1
+          fi
+
+      ###########################
+      # Test 1: Overwrite only field and preserve previous fields
+      ###########################
+      - name: Prepare existing object
+        if: always()
+        run: "echo \"let obj = { n: [4, 5, 6], numbers: [0], letters: ['a'] };\" > object_field.js"
+
+      - name: Overwrite only field
+        if: always()
+        uses: ./ 
+        with:
+          js-name: object_field.js
+          values: '[4,5,6]'
+          field: numbers
+          overwrite: true
+
+      - name: Verify object_field.js preserves letters
+        if: always()
+        run: |
+          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6], letters: ['a'] };"
+          ACTUAL=$(cat object_field.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
+            echo "object_field.js field overwrite failed!"
             exit 1
           fi
 

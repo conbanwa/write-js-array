@@ -91,18 +91,30 @@ if (valueType === "stringified") {
 let content = existingContent;
 if (field) {
   // Check if arrayName exists in existingContent
-  // Minimal change: add/update only the field
-  const regex = new RegExp(`(${arrayName}\\s*=\\s*\\{[\\s\\S]*?\\})`, "m");
-  if (regex.test(existingContent)) {
-    // insert or replace field in existing object literal
-    content = existingContent.replace(regex, match => {
-      // minimal parsing: add or replace field
+  const targetVarRegex = new RegExp(`(\\b${arrayName}\\s*=\\s*\\{[\\s\\S]*?\\})`, "m");
+  // Fallback: find any first object declaration (let|const|var <name> = { ... })
+  const anyObjDeclRegex = new RegExp(`(\\b(?:let|const|var)\\s+(\\w+)\\s*=\\s*\\{[\\s\\S]*?\\})`, "m");
+
+  if (targetVarRegex.test(existingContent)) {
+    // insert or replace field inside the matched object for the exact variable
+    content = existingContent.replace(targetVarRegex, match => {
       const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]+)`);
       if (fieldRegex.test(match)) {
         return match.replace(fieldRegex, `${field}: ${arrayLiteral}`);
       } else {
         // add field before last }
         return match.replace(/}$/, `, ${field}: ${arrayLiteral}}`);
+      }
+    });
+  } else if (anyObjDeclRegex.test(existingContent)) {
+    // Found some object declaration — update that object's field while preserving other fields
+    content = existingContent.replace(anyObjDeclRegex, (match, fullDecl, varName) => {
+      // minimal parsing: add or replace field inside the found object literal (fullDecl)
+      const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]+)`);
+      if (fieldRegex.test(fullDecl)) {
+        return fullDecl.replace(fieldRegex, `${field}: ${arrayLiteral}`);
+      } else {
+        return fullDecl.replace(/}$/, `, ${field}: ${arrayLiteral}}`);
       }
     });
   } else {

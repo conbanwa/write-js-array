@@ -406,10 +406,43 @@ jobs:
 
       - name: Verify nan_inf_field.js exact content
         run: |
-          EXPECT="let nan_inf_field = { nums: [NaN, Infinity, -Infinity, null, undefined] };"
+          EXPECT="let nan_inf_field = { nums: [NaN, Infinity, -Infinity, null, undefined, 1e+200, -1e-200] };"
           ACTUAL=$(cat nan_inf_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "nan_inf_field.js content mismatch!"
+            echo "Expected:"
+            printf "%s" "$EXPECT"
+            echo
+            echo "Actual:"
+            printf "%s" "$ACTUAL"
+            echo
+            exit 1
+          fi
+                ###########################
+
+      # Test: all options except dry-run and value-type
+      ###########################
+      - name: Generate with all options
+        uses: ./
+        with:
+          js-name: all_options.js
+          array-name: customArray
+          values: '[1, "a", true, null, undefined, NaN, Infinity, -Infinity, 1e+200]'
+          parse-mode: js
+          decl-kind: const
+          export-style: named
+          pretty: false
+          overwrite: true
+          field: data
+
+      - name: Verify all_options.js exact content
+        run: |
+          EXPECT="const customArray = { data: [1, \"a\", true, null, undefined, NaN, Infinity, -Infinity, 1e+200] };
+          export { customArray };
+          "
+          ACTUAL=$(cat all_options.js)
+          if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "all_options.js content mismatch!"
             echo "Expected:"
             printf "%s" "$EXPECT"
             echo

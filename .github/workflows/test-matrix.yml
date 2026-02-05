@@ -10,7 +10,28 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        i: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9.99, -1.0, true, "[[[-1, 0, 1]], [], false]", "[-1, 0, 1]", -9999999999999.0, 8888888888.8]
+        values:
+          - "[[[-1, 0, 1]], [], false]"
+          - "[-1, 0, 1]"
+        field:
+          - data
+          - number
+        array-name:
+          - customArray
+        parse-mode:
+          - js
+          - json
+        decl-kind:
+          - const
+          - var
+          - let
+        export-style:
+          - named
+        pretty:
+          - false
+        overwrite:
+          - true
+          - false
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -22,18 +43,36 @@ jobs:
         uses: ./ 
         with:
           js-name: object_field.js
-          values: '[1,2,3,${{ matrix.i }}]'
-          field: numbers
+          values: ${{ matrix.values }}
+          field: ${{ matrix.field }}
+          array-name: ${{ matrix.array-name }}
+          parse-mode: ${{ matrix.parse-mode }}
+          decl-kind: ${{ matrix.decl-kind }}
+          export-style: ${{ matrix.export-style }}
+          pretty: ${{ matrix.pretty }}
+          overwrite: ${{ matrix.overwrite }}
 
       - name: Verify object_field.js
         run: |
-          EXPECT="let object_field = { numbers: [1, 2, 3, ${{ matrix.i }}] };"
+          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: [1, 2, 3, ${{ matrix.values }}] };"
+          if [ "${{ matrix.export-style }}" = "named" ]; then
+            EXPECT="$EXPECT
+          export { ${{ matrix.array-name }} };"
+          elif [ "${{ matrix.export-style }}" = "default" ]; then
+            EXPECT="$EXPECT
+          export default ${{ matrix.array-name }};"
+          elif [ "${{ matrix.export-style }}" = "commonjs" ]; then
+            EXPECT="$EXPECT
+          module.exports = ${{ matrix.array-name }};"
+          fi
+
           ACTUAL=$(cat object_field.js)
+
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
-            echo "$EXPECT"
+            printf "%s\n" "$EXPECT"
             echo "Actual:"
-            echo "$ACTUAL"
+            printf "%s\n" "$ACTUAL"
             echo "object_field.js content mismatch!"
             exit 1
           fi
@@ -50,14 +89,19 @@ jobs:
         uses: ./ 
         with:
           js-name: object_field.js
-          values: '[4,5,6,${{ matrix.i }}]'
-          field: numbers
-          overwrite: true
+          values: ${{ matrix.values }}
+          field: ${{ matrix.field }}
+          array-name: ${{ matrix.array-name }}
+          parse-mode: ${{ matrix.parse-mode }}
+          decl-kind: ${{ matrix.decl-kind }}
+          export-style: ${{ matrix.export-style }}
+          pretty: ${{ matrix.pretty }}
+          overwrite: ${{ matrix.overwrite }}
 
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6, ${{ matrix.i }}], letters: ['a'] };"
+          EXPECT="let obj = { n: [4, 5, 6], numbers: [${{ matrix.values }}], letters: ['a'] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -80,23 +124,40 @@ jobs:
         uses: ./ 
         with:
           js-name: object_field.js
-          values: '[4,5,6,${{ matrix.i }}]'
-          field: numbers
-          overwrite: true
+          values: ${{ matrix.values }}
+          field: ${{ matrix.field }}
+          array-name: ${{ matrix.array-name }}
+          parse-mode: ${{ matrix.parse-mode }}
+          decl-kind: ${{ matrix.decl-kind }}
+          export-style: ${{ matrix.export-style }}
+          pretty: ${{ matrix.pretty }}
+          overwrite: ${{ matrix.overwrite }}
 
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { numbers: [4, 5, 6, ${{ matrix.i }}], letters: ['a'] };"
+          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: [${{ matrix.values }}], letters: ['a'] };"
+          if [ "${{ matrix.export-style }}" = "named" ]; then
+            EXPECT="$EXPECT
+          export { ${{ matrix.array-name }} };"
+          elif [ "${{ matrix.export-style }}" = "default" ]; then
+            EXPECT="$EXPECT
+          export default ${{ matrix.array-name }};"
+          elif [ "${{ matrix.export-style }}" = "commonjs" ]; then
+            EXPECT="$EXPECT
+          module.exports = ${{ matrix.array-name }};"
+          fi
+
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
-            echo "$EXPECT"
+            printf "%s\n" "$EXPECT"
             echo "Actual:"
-            echo "$ACTUAL"
+            printf "%s\n" "$ACTUAL"
             echo "object_field.js field overwrite failed!"
             exit 1
           fi
+
 
       ###########################
       # Test 3: Create new object with field
@@ -106,19 +167,36 @@ jobs:
         uses: ./ 
         with:
           js-name: new_object_field.js
-          values: '[7,8,9,${{ matrix.i }}]'
-          field: nums
+          values: ${{ matrix.values }}
+          field: ${{ matrix.field }}
+          array-name: ${{ matrix.array-name }}
+          parse-mode: ${{ matrix.parse-mode }}
+          decl-kind: ${{ matrix.decl-kind }}
+          export-style: ${{ matrix.export-style }}
+          pretty: ${{ matrix.pretty }}
+          overwrite: ${{ matrix.overwrite }}
 
       - name: Verify new_object_field.js
         if: always()
         run: |
-          EXPECT="let new_object_field = { nums: [7, 8, 9, ${{ matrix.i }}] };"
+          EXPECT="${{ matrix.decl-kind }} ${{ matrix.array-name }} = { ${{ matrix.field }}: [${{ matrix.values }}] };"
+          if [ "${{ matrix.export-style }}" = "named" ]; then
+            EXPECT="$EXPECT
+          export { ${{ matrix.array-name }} };"
+          elif [ "${{ matrix.export-style }}" = "default" ]; then
+            EXPECT="$EXPECT
+          export default ${{ matrix.array-name }};"
+          elif [ "${{ matrix.export-style }}" = "commonjs" ]; then
+            EXPECT="$EXPECT
+          module.exports = ${{ matrix.array-name }};"
+          fi
+
           ACTUAL=$(cat new_object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
-            echo "$EXPECT"
+            printf "%s\n" "$EXPECT"
             echo "Actual:"
-            echo "$ACTUAL"
+            printf "%s\n" "$ACTUAL"
             echo "new_object_field.js content mismatch!"
             exit 1
-          fi
+

@@ -37,8 +37,8 @@ jobs:
             js-name: "protected.js"
             values: '["1",2,3]'
             overwrite: false
-            setup-file: true # Custom flag to trigger file creation
-            setup-cmd: "sudo chown root:root protected.js && sudo chmod 755 protected.js"
+            setup-file: false # Custom flag to trigger file creation
+            setup-cmd: "touch protected.js && sudo chown root:root protected.js && sudo chmod 755 protected.js"
             expected-fail: true
 
           # Case 5: Root Permission Denied
@@ -53,7 +53,7 @@ jobs:
             js-name: "locked_dir/data.js"
             values: '[1,2,3]'
             setup-file: false # Custom flag to trigger file creation
-            setup-cmd: "sudo mkdir locked_dir && sudo chown root:root locked_dir && sudo chmod 755 locked_dir && ls locked_dir/ && ls"
+            setup-cmd: "sudo mkdir locked_dir && sudo chown root:root locked_dir && sudo chmod 755 locked_dir && ls locked_dir/"
             expected-error: true
 
 

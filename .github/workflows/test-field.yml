@@ -1,4 +1,4 @@
-name: Full Test Generate JS Array Action - Field
+name: JS Array Field
 
 on:
   workflow_dispatch:
@@ -23,9 +23,13 @@ jobs:
 
       - name: Verify object_field.js
         run: |
-          EXPECT="let object_field = { numbers: [1, 2, 3] };\n"
+          EXPECT="let object_field = { numbers: [1, 2, 3] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "object_field.js content mismatch!"
             exit 1
           fi
@@ -34,9 +38,11 @@ jobs:
       # Test 2: Overwrite only field and preserve other fields
       ###########################
       - name: Prepare existing object
+        if: always()
         run: "echo \"let obj = { numbers: [0], letters: ['a'] };\" > object_field.js"
 
       - name: Overwrite only field
+        if: always()
         uses: ./ 
         with:
           js-name: object_field.js
@@ -45,10 +51,15 @@ jobs:
           overwrite: true
 
       - name: Verify object_field.js preserves letters
+        if: always()
         run: |
-          EXPECT="let obj = { numbers: [4, 5, 6], letters: ['a'] };\n"
+          EXPECT="let obj = { numbers: [4, 5, 6], letters: ['a'] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "object_field.js field overwrite failed!"
             exit 1
           fi
@@ -57,6 +68,7 @@ jobs:
       # Test 3: Create new object with field
       ###########################
       - name: Create new object with field
+        if: always()
         uses: ./ 
         with:
           js-name: new_object_field.js
@@ -64,10 +76,15 @@ jobs:
           field: nums
 
       - name: Verify new_object_field.js
+        if: always()
         run: |
-          EXPECT="let new_object_field = { nums: [7, 8, 9] };\n"
+          EXPECT="let new_object_field = { nums: [7, 8, 9] };"
           ACTUAL=$(cat new_object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
+            echo "Expected:"
+            echo "$EXPECT"
+            echo "Actual:"
+            echo "$ACTUAL"
             echo "new_object_field.js content mismatch!"
             exit 1
           fi

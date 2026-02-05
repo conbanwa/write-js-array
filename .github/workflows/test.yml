@@ -413,11 +413,9 @@ jobs:
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "nan_inf_field.js content mismatch!"
             echo "Expected:"
-            printf "%s" "$EXPECT"
-            echo
+            echo "$EXPECT"
             echo "Actual:"
-            printf "%s" "$ACTUAL"
-            echo
+            echo "$ACTUAL"
             exit 1
           fi
                 ###########################
@@ -448,10 +446,8 @@ jobs:
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "all_options.js content mismatch!"
             echo "Expected:"
-            printf "%s" "$EXPECT"
-            echo
+            echo "$EXPECT"
             echo "Actual:"
-            printf "%s" "$ACTUAL"
-            echo
+            echo "$ACTUAL"
             exit 1
           fi

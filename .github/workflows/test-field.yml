@@ -10,7 +10,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        i: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9.99, -1.0, true, "[[[-1, 0, 1]], [], \"undefined\"]", "[-1, 0, 1]", "null", "undefined", -9999999999999.0, 8888888888.8]
+        i: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9.99, -1.0, true, "[[[-1, 0, 1]], []]", "[-1, 0, 1]", null, -9999999999999.0, 8888888888.8]
+        a: ["a", "null", undefined, "undefined", "[-1, 0, 1]", Infinity, "Infinity"]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -22,12 +23,12 @@ jobs:
         uses: ./ 
         with:
           js-name: object_field.js
-          values: '[1,2,3,${{ matrix.i }}]'
+          values: '[1,2,3,${{ matrix.i }}, ${{ matrix.a }}]'
           field: numbers
 
       - name: Verify object_field.js
         run: |
-          EXPECT="let object_field = { numbers: [1, 2, 3, ${{ matrix.i }}] };"
+          EXPECT="let object_field = { numbers: [1, 2, 3, ${{ matrix.i }}, ${{ matrix.a }}] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -50,14 +51,14 @@ jobs:
         uses: ./ 
         with:
           js-name: object_field.js
-          values: '[4,5,6,${{ matrix.i }}]'
+          values: '[4,5,6,${{ matrix.i }}, ${{ matrix.a }}]'
           field: numbers
           overwrite: true
 
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6, ${{ matrix.i }}], letters: ['a'] };"
+          EXPECT="let obj = { n: [4, 5, 6], numbers: [4, 5, 6, ${{ matrix.i }}, ${{ matrix.a }}], letters: ['a'] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -80,14 +81,14 @@ jobs:
         uses: ./ 
         with:
           js-name: object_field.js
-          values: '[4,5,6,${{ matrix.i }}]'
+          values: '[4,5,6,${{ matrix.i }}, ${{ matrix.a }}]'
           field: numbers
           overwrite: true
 
       - name: Verify object_field.js preserves letters
         if: always()
         run: |
-          EXPECT="let obj = { numbers: [4, 5, 6, ${{ matrix.i }}], letters: ['a'] };"
+          EXPECT="let obj = { numbers: [4, 5, 6, ${{ matrix.i }}, ${{ matrix.a }}], letters: ['a'] };"
           ACTUAL=$(cat object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"
@@ -106,13 +107,13 @@ jobs:
         uses: ./ 
         with:
           js-name: new_object_field.js
-          values: '[7,8,9,${{ matrix.i }}]'
+          values: '[7,8,9,${{ matrix.i }}, ${{ matrix.a }}]'
           field: nums
 
       - name: Verify new_object_field.js
         if: always()
         run: |
-          EXPECT="let new_object_field = { nums: [7, 8, 9, ${{ matrix.i }}] };"
+          EXPECT="let new_object_field = { nums: [7, 8, 9, ${{ matrix.i }}, ${{ matrix.a }}] };"
           ACTUAL=$(cat new_object_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "Expected:"

@@ -399,14 +399,14 @@ jobs:
         uses: ./
         with:
           js-name: nan_inf_field.js
-          values: '[NaN, Infinity, -Infinity]'
+          values: '[NaN, Infinity, -Infinity, null, undefined, 1e+200, -1e-200]'
           field: nums
           value-type: stringified
           parse-mode: js
 
       - name: Verify nan_inf_field.js exact content
         run: |
-          EXPECT="let nan_inf_field = { nums: [NaN, Infinity, -Infinity] };\n"
+          EXPECT="let nan_inf_field = { nums: [NaN, Infinity, -Infinity, null, undefined] };"
           ACTUAL=$(cat nan_inf_field.js)
           if [ "$ACTUAL" != "$EXPECT" ]; then
             echo "nan_inf_field.js content mismatch!"

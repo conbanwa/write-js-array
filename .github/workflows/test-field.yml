@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         i: [0, 1, 2, 3, 9.99, -1.0, true, "[[[-1, 0, 1]], []]", "[-1, 0, 1]", null, -9999999999999.0, 8888888888.8]
-        a: ["a", "null", "[\"-1\", 0, 1]", Infinity, "Infinity", undefined, "undefined"]
+        a: ['"a"', '"null"', '"[\"-1\", 0, 1]"', '"Infinity"', "'Infinity'", undefined, "undefined"]
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
@@ -25,6 +25,7 @@ jobs:
           js-name: object_field.js
           values: '[1,2,3,${{ matrix.i }}, ${{ matrix.a }}]'
           field: numbers
+          parse-mode: js
 
       - name: Verify object_field.js
         run: |

@@ -50,7 +50,13 @@ if (fs.existsSync(jsName)) {
 
 function parseInput(raw) {
   if (parseMode === "json") {
-    return JSON.parse(raw);
+    try {
+      return JSON.parse(raw);
+    } catch (e) {
+      throw new Error(
+        "Invalid JSON input. Use parse-mode: js for undefined, NaN, Infinity."
+      );
+    }
   }
   if (parseMode === "js") {
     return Function(`"use strict"; return (${raw});`)();

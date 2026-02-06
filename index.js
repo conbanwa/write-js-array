@@ -43,7 +43,7 @@ if (!["let", "const", "var"].includes(declKind)) {
 let existingContent = "";
 if (fs.existsSync(jsName)) {
   existingContent = fs.readFileSync(jsName, "utf8");
-  if (!overwrite && !dryRun) {
+  if (!overwrite && !dryRun && !field) {
     throw new Error(`File "${jsName}" already exists and overwrite=false`);
   }
 }
@@ -102,7 +102,7 @@ if (field) {
   // Fallback: find any first object declaration (let|const|var <name> = { ... })
   const anyObjDeclRegex = new RegExp(`(\\b(?:let|const|var)\\s+(\\w+)\\s*=\\s*\\{[\\s\\S]*?\\})`, "m");
 
-  const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]*)`, 'g');
+  const fieldRegex = new RegExp(`(${field}\\s*:\\s*(\\[[\\s\\S]*?\\]|[^,}]*))`, 'g');
   if (targetVarRegex.test(existingContent)) {
     // insert or replace field inside the matched object for the exact variable
     content = existingContent.replace(targetVarRegex, match => {

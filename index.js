@@ -102,10 +102,10 @@ if (field) {
   // Fallback: find any first object declaration (let|const|var <name> = { ... })
   const anyObjDeclRegex = new RegExp(`(\\b(?:let|const|var)\\s+(\\w+)\\s*=\\s*\\{[\\s\\S]*?\\})`, "m");
 
+  const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]*)`, 'g');
   if (targetVarRegex.test(existingContent)) {
     // insert or replace field inside the matched object for the exact variable
     content = existingContent.replace(targetVarRegex, match => {
-      const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]+)`);
       if (fieldRegex.test(match)) {
         return match.replace(fieldRegex, `${field}: ${arrayLiteral}`);
       } else {
@@ -117,7 +117,6 @@ if (field) {
     // Found some object declaration — update that object's field while preserving other fields
     content = existingContent.replace(anyObjDeclRegex, (match, fullDecl, varName) => {
       // minimal parsing: add or replace field inside the found object literal (fullDecl)
-      const fieldRegex = new RegExp(`(${field}\\s*:\\s*[^,}]+)`);
       if (fieldRegex.test(fullDecl)) {
         return fullDecl.replace(fieldRegex, `${field}: ${arrayLiteral}`);
       } else {

@@ -110,7 +110,7 @@ if (field) {
         return match.replace(fieldRegex, `${field}: ${arrayLiteral}`);
       } else {
         // add field before last }
-        return match.replace(/}\s*$/, `, ${field}: ${arrayLiteral}}`);
+        return match.replace(/(,\s*)?}\s*$/, `, ${field}: ${arrayLiteral}}`);
       }
     });
   } else if (anyObjDeclRegex.test(existingContent)) {
@@ -120,7 +120,7 @@ if (field) {
       if (fieldRegex.test(fullDecl)) {
         return fullDecl.replace(fieldRegex, `${field}: ${arrayLiteral}`);
       } else {
-        return fullDecl.replace(/}$/, `, ${field}: ${arrayLiteral}}`);
+        return fullDecl.replace(/(,\s*)?}\s*$/, `, ${field}: ${arrayLiteral}}`);
       }
     });
   } else {
